@@ -10,6 +10,8 @@ Install the dependencies:
 $ pip install -r requirements.txt
 ```
 
+Install [extractor@8303b71](https://gitlab.com/juan.hoyosr/extractor/tree/8303b71a369f627805958d53f52b8d964bd0817b) and [extractor-python@fdc60be](https://gitlab.com/juan.hoyosr/extractor-python/tree/fdc60beedf3c12c3dfd93244e0cba053c00310b9).
+
 Make sure the `extractor` command is available in your `PATH`. If not install it.
 
 ```bash
