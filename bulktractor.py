@@ -43,7 +43,7 @@ if __name__ == '__main__':
     dryrun = args.dryrun
 
     state = State(csv_filename, only=repositories)
-    state.load_projects()
+    state.store_projects()
 
     kwargs = {
         'clone': clone,

@@ -1,4 +1,4 @@
-recepits_db = {
+db = {
     'host': 'localhost',
     'dbname': 'toggles',
     'username': 'elhoyos',

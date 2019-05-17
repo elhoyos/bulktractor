@@ -17,7 +17,7 @@ class State():
         # Singleton the cursor to the db
         if not State.cursor:
             logging.debug('Connecting to database...')
-            self.conn = psycopg2.connect("host= '{host}' dbname= '{dbname}' user='{username}' port={port}".format_map(config.recepits_db))
+            self.conn = psycopg2.connect("host= '{host}' dbname= '{dbname}' user='{username}' port={port}".format_map(config.db))
             logging.info('Connected to database')
 
             State.cursor = self.conn.cursor()
@@ -29,12 +29,18 @@ class State():
 
         try:
             self.cursor.execute(
-                'INSERT INTO projects (repo_name, library, library_language, number_of_commits) VALUES (%s, %s, %s, %s)',
+                ' '.join([
+                    'INSERT INTO projects',
+                    '(repo_name, library, library_language, number_of_commits, first_toggles_commit)',
+                    'VALUES',
+                    '(%s, %s, %s, %s, %s)'
+                ]),
                 [
                     project['repo_name'],
                     project['library'],
                     project['library_language'],
                     project['number_of_commits'],
+                    project['first_toggles_commit'],
                 ]
             )
         except psycopg2.IntegrityError:
@@ -42,10 +48,9 @@ class State():
         else:
             self.conn.commit()
 
-    def load_projects(self):
+    def store_projects(self):
         only = self.only
         load_all = len(only) == 0
-        # Store the projects from the csv into the state
         with open(self.csv_filename, 'r') as file:
             reader = csv.DictReader(file)
             for project in reader:
@@ -72,17 +77,14 @@ class State():
                 '   LIMIT 1',
                 '   FOR UPDATE',
                 ')',
-                'RETURNING repo_name, first_toggles_commit'
+                'RETURNING repo_name'
             ]))
-            project = self.cursor.fetchone()
+            results = self.cursor.fetchone()
             self.conn.commit()
-            if project:
-                if project[0] in self.__projects:
-                    # HACK: temporary augment loaded project
-                    # TODO: store projects data in the database and load from there
-                    loaded_project = self.__projects[project[0]]
-                    loaded_project['first_toggles_commit'] = project[1]
-                    yield loaded_project
+            if results:
+                project = results[0]
+                if project in self.__projects:
+                    yield self.__projects[project]
             else:
                 break
 
