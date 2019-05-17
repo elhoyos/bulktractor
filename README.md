@@ -68,11 +68,8 @@ $ echo -e "repo_A\nrepo_B" | parallel -j2 --results ./logs ./extract.sh
 Running bulktractor with `DEBUG=toggles-diff*` and storing stderr has its advantages for reproducibility purposes. This could serve useful if you have recent versions of the repositories and want to set them up to reproduce the results here presented.
 
 ```bash
-# last processed commit per repository
-ls -b logs/1 | xargs -I{} sh -c 'tac "$PWD/logs/1/{}/stderr" | grep -m1 "toggles-diff "' | awk '{repo = $1 ; gsub(/\(|\)/, "", repo) ; print repo, $4}'
-
 # last commit and repo
-ls -b logs/1 | xargs -I{} sh -c 'tac "$PWD/logs/1/{}/stderr" | grep -m1 "toggles-diff " | awk '"'"'{print $4, "{}"}'"'"'' | xargs -n2 sh -c '$0 ---- "$1"'
+ls -b logs/1 | xargs -I{} sh -c 'tac "$PWD/logs/1/{}/stderr" | grep -m1 "toggles-diff " | awk '"'"'{print $4, "{}"}'"'"'' | xargs -n2 sh -c 'echo $0 ---- "$1"'
 
 # reset repo HEAD to last commit
 ls -b logs/1 | xargs -I% sh -c 'tac "$PWD/logs/1/%/stderr" | grep -m1 "toggles-diff " | xargs echo "%$1"' | awk '{repodir = $1; gsub(/\\/, "_", repodir) ; print repodir, $5}' | xargs -n2 sh -c 'cd ~/_repositories/$0; pwd ; git reset --hard $1'
@@ -83,5 +80,5 @@ ls -b logs/1 | xargs -I% sh -c 'tac "$PWD/logs/1/%/stderr" | grep -m1 "toggles-d
 If you ran bulktractor with `DEBUG=toggles-diff*` and you have those logs available, you can use the following command to generate sql update queries with the first commit where toggles were found for all the projects:
 
 ```bash
-ls -b logs/1/*/stderr | xargs -I{} awk '{if ($3 == "toggles-diff") { repo = $1 ; gsub(/\(|\)/, "", repo) ; commit = $4; } if ($6 == "ADDED") exit} END {print "UPDATE projects SET first_toggles_commit = '\''"commit"'\'' WHERE repo_name = '\''"repo"'\''"}' {} > update.sql
+ls -b logs/1/*/stderr | xargs -I{} awk '{if ($3 == "toggles-diff") { repo = $1 ; gsub(/\(|\)/, "", repo) ; commit = $4; } if ($6 == "ADDED") exit} END {print "UPDATE projects SET first_toggles_commit = '\''"commit"'\'' WHERE repo_name = '\''"repo"'\'';"}' {} > update.sql
 ```
