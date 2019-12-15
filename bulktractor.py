@@ -14,8 +14,9 @@ no_toggles_skip = ''
 OWNER_REPO_SEPARATOR = '__'
 
 def extract_toggles(args, kwargs):
-    dryrun = kwargs.pop('dryrun', None)
-    extractor = Extractor(*args, **kwargs)
+    extractor_kwargs = kwargs.copy()
+    dryrun = extractor_kwargs.pop('dryrun', None)
+    extractor = Extractor(*args, **extractor_kwargs)
     if dryrun == True:
         extractor.do_clone()
         return b''
