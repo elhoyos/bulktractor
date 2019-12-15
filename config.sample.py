@@ -1,7 +1,7 @@
 db = {
     'host': 'localhost',
     'dbname': 'toggles',
-    'username': 'elhoyos',
+    'username': 'username',
     'password': None,
     'port': '5432',
 }
