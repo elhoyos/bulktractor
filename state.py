@@ -40,7 +40,7 @@ class State():
                     project['library'],
                     project['library_language'],
                     project['number_of_commits'],
-                    project['first_toggles_commit'],
+                    project.get('first_toggles_commit', None),
                 ]
             )
         except psycopg2.IntegrityError:
