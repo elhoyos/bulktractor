@@ -38,7 +38,7 @@ $ python bulktractor.py --help
 Asuming the libraries in your `repositories.csv` file match the ones supported by `extractor-python`, you can extract all the toggles like this:
 
 ```bash
-$ PYTHON_PATH=`pyenv which python` SCRIPT_PATH="~/extractor-python" REPOS_STORE="~/__REPOS_STORE" python bulktractor.py repositories.csv ./toggles
+$ PYTHON_PATH=`pyenv which python` SCRIPT_PATH="/home/me/extractor-python" REPOS_STORE="/home/me/__REPOS_STORE" python bulktractor.py repositories.csv ./toggles
 ```
 
 Notice the only environment variable required by bulktractor is `REPOS_STORE`. The rest are necessary for `extractor` or its specific language extractors.
