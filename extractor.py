@@ -43,7 +43,7 @@ class Extractor():
         logging.debug('Extracting %s', reponame)
 
         # TODO: not just python
-        args = [self.directory, '"*.py *.html"', '--history', library]
+        args = [self.directory, '"**/*.{py,html}"', '--history', library]
 
         if self.explore:
             args.append('--break')
